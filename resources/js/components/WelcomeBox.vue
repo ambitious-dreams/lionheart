@@ -13,7 +13,7 @@
                             </a>
                         </p>
                         <hr class="my-4">
-                        <template v-if="!indexData || !indexData.user">
+                        <template v-if="!indexData.user">
                             <p>Please login first!</p>
                             <a class="btn btn-primary btn-lg" :href="url('login/facebook')" role="button">
                                 <i class="fab fa-facebook-square"></i>
@@ -45,26 +45,15 @@
 
 <script>
 export default {
-    data() {
-        return {
-            indexData: null
-        };
-    },
+    props: ['indexData'],
     methods: {
         url(path) {
             return url(path);
         },
         logout() {
-            axios.post(url('logout')).then(response => {
-                this.$root.$emit('logout');
-            });
+            this.$root.$emit('logout');
         }
     },
-    mounted() {
-        this.$root.$on('indexLoaded', data => {
-            this.indexData = data;
-        });
-    }
 }
 </script>
 <style>

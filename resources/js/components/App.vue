@@ -1,9 +1,11 @@
 <template>
     <div id="app">
         <vue-progress-bar></vue-progress-bar>
-        <alert></alert>
-        <welcome-box></welcome-box>
-        <comments-box></comments-box>
+        <template v-if="indexData">
+            <alert :indexData="indexData"></alert>
+            <welcome-box :indexData="indexData"></welcome-box>
+            <comments-box :indexData="indexData"></comments-box>
+        </template>
     </div>
 </template>
 
@@ -13,6 +15,11 @@ import WelcomeBox from './WelcomeBox.vue';
 import CommentsBox from './Comment/CommentsBox.vue';
 
 export default {
+    data() {
+        return {
+            indexData: null,
+        };
+    },
     components: {
         Alert,
         WelcomeBox,
@@ -38,7 +45,7 @@ export default {
         },
         index() {
             axios.get(url('api/index')).then(response => {
-                this.$root.$emit('indexLoaded', response.data);
+                this.indexData = response.data;
             });
         }
     },
@@ -48,7 +55,9 @@ export default {
     },
     mounted() {
         this.$root.$on('logout', data => {
-            this.index();
+            axios.post(url('logout')).then(response => {
+                this.index();
+            });
         });
     }
 }

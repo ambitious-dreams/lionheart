@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class UserRepository extends Repository {
 
@@ -13,31 +14,16 @@ class UserRepository extends Repository {
         $this->model = $model;
     }
 
-    public function createOrFindOAuthUser($provider, $providerID, $details) {
+    public function findOAuthUser($provider, $userData) {
 
-        $user = $this->model
-                ->where($provider.'_id', $providerID)
+        return $this->model
+                ->where($provider.'_id', $userData->getId())
                 ->first();
-
-        if ($user) {
-            return compact('user');
-        }
-
-        $validationResult = $this->validateOAuthUser($details);
-
-        if ($validationResult !== true) {
-            return $validationResult;
-        }
-
-        $names = $this->getOAuthUserNames($details);
-        $user = $this->createOAuthUser($details, $names, $provider, $providerID);
-
-        return compact('user');
     }
 
-    public function validateOAuthUser($details) {
+    public function validateOAuthUser($userData) {
 
-        $data = ['email' => $details['email']];
+        $data = ['email' => $userData->getEmail()];
         $rules = ['email' => 'required|email|unique:users,email'];
         $validator = Validator::make($data, $rules);
 
@@ -50,9 +36,25 @@ class UserRepository extends Repository {
         return true;
     }
 
-    public function getOAuthUserNames($details) {
+    public function createOAuthUser($userData, $provider) {
 
-        $nickParts = explode(' ', $details['name']);
+        $names = $this->getOAuthUserNames($userData);
+
+        $user = new User;
+        $user->name = $names['name'];
+        $user->surname = $names['surname'];
+        $user->avatar_url = $userData->getAvatar();
+        $user->email = $userData->getEmail();
+        $user->password = bcrypt(Str::random(10));
+        $user->{$provider.'_id'} = $userData->getId();
+        $user->save();
+
+        return $user;
+    }
+
+    public function getOAuthUserNames($userData) {
+
+        $nickParts = explode(' ', $userData->getName());
         $name = $nickParts[0];
         $surnameParts = $nickParts;
         if (count($nickParts) > 1) { unset($surnameParts[0]); }
@@ -61,17 +63,8 @@ class UserRepository extends Repository {
         return compact('name', 'surname');
     }
 
-    public function createOAuthUser($details, $names, $provider, $providerID) {
+    public function logIn($user) {
 
-        $user = new User;
-        $user->name = $names['name'];
-        $user->surname = $names['surname'];
-        $user->avatar_url = $details['avatar'];
-        $user->email = $details['email'];
-        $user->password = bcrypt(Str::random(10));
-        $user->{$provider.'_id'} = $providerID;
-        $user->save();
-
-        return $user;
+        Auth::loginUsingId($user->id);
     }
 }

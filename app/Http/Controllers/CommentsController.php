@@ -19,11 +19,12 @@ class CommentsController extends Controller
 
     public function index()
     {
-        $comments = Comment::with('user')
+        $comments = Comment::with('user', 'replies.user')
                 ->orderBy('id', 'desc')
+                ->where('parent_id', null)
                 ->take(3)
                 ->get();
-        $totalCommentsCount = Comment::count();
+        $totalCommentsCount = Comment::where('parent_id', null)->count();
 
         return response()->json(compact('comments', 'totalCommentsCount'), Response::HTTP_OK);
     }
@@ -31,8 +32,9 @@ class CommentsController extends Controller
     public function getMore()
     {
         $skip = request()->input('skip');
-        $comments = Comment::with('user')
+        $comments = Comment::with('user', 'replies.user')
                 ->orderBy('id', 'desc')
+                ->where('parent_id', null)
                 ->skip($skip)
                 ->take(3)
                 ->get();
@@ -51,7 +53,7 @@ class CommentsController extends Controller
         $comment->parent_id = request()->input('parent_id');
         $comment->save();
 
-        $comment->load('user');
+        $comment->load('user', 'replies.user');
 
         return response()->json($comment, Response::HTTP_CREATED);
     }

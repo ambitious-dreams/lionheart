@@ -7,8 +7,9 @@
         </div>
         <comment-item
             v-for="comment in comments"
-            v-bind:comment="comment"
+            :comment="comment"
             :key="comment.id"
+            :indexData="indexData"
         ></comment-item>
     </div>
 </template>
@@ -23,6 +24,7 @@ export default {
             totalCommentsCount: 0
         };
     },
+    props: ['indexData'],
     computed: {
         olderCommentsCount: function () {
           return this.totalCommentsCount - this.comments.length;
@@ -52,8 +54,16 @@ export default {
     },
     mounted() {
         this.$root.$on('commentCreated', data => {
-            this.comments.push(data);
-            this.totalCommentsCount++;
+            if (!data.parent_id) {
+                this.comments.push(data);
+                this.totalCommentsCount++;
+            } else {
+                let parentComment = this.comments.filter(comment => {
+                    return comment.id === data.parent_id;
+                });
+                parentComment = parentComment[0];
+                parentComment.replies.push(data);
+            }
         });
     }
 }

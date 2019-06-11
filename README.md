@@ -1,49 +1,57 @@
-# lionheart
+# Lionheart
 
-Lionheart
+Comments app. Uses Laravel 5.8 + Vue 2.6
 
-### Installation
+## Installation
 
-1. Clone repo
+### Clone repo
 
-2. Change to directory
+### Change to directory
 
 ````
 cd lionheart
 ````   
 
-3. Install dependencies
+### Install dependencies
 
 ````
 composer install
 ````
 
-4. Copy .env file
+### Copy .env file
 
 ```
 cp .env.example .env
 ```
 
-5. Modify `DB_*` value in `.env` with your database config.
+### Modify `DB_*` value in `.env` with your database config.
 
-6. Generate application key:
+### Enter Facebook and Google app credentials in `.env` file.
+
+### Generate application key:
 
 ````
 php artisan key:generate
 ````
 
-7. Migrate
+### Migrate
 ````
 php artisan migrate
 ````
 
-8. Install Node modules
+### Install Node modules
 ````
 npm install
 ````
 
-9. Build
+### Build
 
 ````
 npm run dev
+````
+
+or for real-time building
+
+````
+npm run watch
 ````

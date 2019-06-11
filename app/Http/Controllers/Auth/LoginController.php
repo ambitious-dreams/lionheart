@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\UserRepository;
 
 class LoginController extends Controller
@@ -56,20 +55,23 @@ class LoginController extends Controller
 
     public function handleProviderCallback($provider)
     {
-        $user = Socialite::driver($provider)->user();
+        $userData = Socialite::driver($provider)->user();
+        $user = $this->userRepo->findOAuthUser($provider, $userData);
 
-        $result = $this->userRepo->createOrFindOAuthUser($provider, $user->getId(), [
-            'name' => $user->getName(),
-            'email' => $user->getEmail(),
-            'avatar' => $user->getAvatar(),
-        ]);
-
-        if (is_object($result) && get_class($result) == 'Illuminate\Http\RedirectResponse') {
-            return $result;
+        if ($user) {
+            $this->userRepo->logIn($user);
+            return redirect($this->redirectPath());
         }
 
-        Auth::loginUsingId($result['user']->id);
+        $validationResult = $this->userRepo->validateOAuthUser($userData);
 
-        return redirect('/');
+        if ($validationResult !== true) {
+            return $validationResult;
+        }
+
+        $user = $this->userRepo->createOAuthUser($userData, $provider);
+
+        $this->userRepo->logIn($user);
+        return redirect($this->redirectPath());
     }
 }

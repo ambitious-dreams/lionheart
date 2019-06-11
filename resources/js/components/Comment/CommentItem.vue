@@ -3,12 +3,12 @@
         <div class="card bg-light comment-item">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-1">
+                    <div class="col-lg-1 col-md-2 col-3">
                         <comment-item-user-image
                             :comment="comment"
                         ></comment-item-user-image>
                     </div>
-                    <div class="col-md-11">
+                    <div class="col-lg-11 col-md-10 col-9">
                         <comment-item-content
                             :comment="comment"
                             :reply2Parent="null"
@@ -16,15 +16,15 @@
                             @toggleReplies="toggleReplies"
                         ></comment-item-content>
 
-                        <div class="replies" v-if="comment.replies.length && showReplies">
+                        <div class="replies mt-4" v-if="comment.replies.length && showReplies">
                             <div class="reply my-3" v-for="reply in comment.replies">
                                 <div class="row">
-                                    <div class="col-md-1">
+                                    <div class="col-lg-1 col-md-2 col-3">
                                         <comment-item-user-image
                                             :comment="reply"
                                         ></comment-item-user-image>
                                     </div>
-                                    <div class="col-md-11">
+                                    <div class="col-lg-11 col-md-10 col-9">
                                         <comment-item-content
                                             :comment="reply"
                                             :reply2Parent="reply"
@@ -36,14 +36,16 @@
                             </div>
                         </div>
 
-                        <create-comment
-                            v-if="showReplyCreate"
-                            :parentComment="comment"
-                            :parent2Comment="reply2Parent"
-                            :indexData="indexData"
-                            :isReply="true"
-                            @hideReplyBox="hideReplyBox"
-                        ></create-comment>
+                        <div class="reply-to-comment mt-4">
+                            <create-comment
+                                v-if="showReplyCreate"
+                                :parentComment="comment"
+                                :parent2Comment="reply2Parent"
+                                :indexData="indexData"
+                                :isReply="true"
+                                @hideReplyBox="hideReplyBox"
+                            ></create-comment>
+                        </div>
                     </div>
                 </div>
             </div>

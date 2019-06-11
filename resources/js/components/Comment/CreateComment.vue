@@ -1,28 +1,32 @@
 <template>
-    <div class="row mt-4 mb-4">
-        <div class="col-md-1">
-            <img :src="indexData.user.avatar_url" class="img-fluid rounded-circle"/>
-        </div>
-        <div class="col-md-11">
-            <form @submit.prevent="store">
-                <input v-if="isReply" type="hidden" v-model="comment.parent_id">
-                <div class="form-group">
-                    <textarea class="form-control" v-model="comment.content" rows="2" placeholder="Enter your message..."></textarea>
-                    <div class="errors mt-1" v-if="errors && errors.content">
-                        <span class="text-danger font-weight-bold" v-for="error in errors.content">
-                            {{ error }}
-                        </span>
-                    </div>
+    <div class="card bg-light">
+        <div class="card-body">
+            <div class="row mt-4">
+                <div class="col-lg-1 col-md-2 col-3">
+                    <img :src="indexData.user.avatar_url" class="img-fluid rounded-circle user-image"/>
                 </div>
-                <div class="form-group">
-                    <button class="btn btn-primary" :disabled="addCommentBtnDisabled">
-                        Add Comment
-                    </button>
-                    <button class="btn btn-secondary" type="button" v-if="parentComment" @click="hideReplyBox">
-                        Cancel
-                    </button>
+                <div class="col-lg-11 col-md-10 col-9">
+                    <form @submit.prevent="store">
+                        <input v-if="isReply" type="hidden" v-model="comment.parent_id">
+                        <div class="form-group">
+                            <textarea class="form-control" v-model="comment.content" rows="2" placeholder="Enter your message..."></textarea>
+                            <div class="errors mt-1" v-if="errors && errors.content">
+                                <span class="text-danger font-weight-bold" v-for="error in errors.content">
+                                    {{ error }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary mb-1" :disabled="addCommentBtnDisabled">
+                                Add Comment
+                            </button>
+                            <button class="btn btn-secondary mb-1" type="button" v-if="parentComment" @click="hideReplyBox">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </template>

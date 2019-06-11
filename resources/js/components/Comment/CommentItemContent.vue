@@ -2,13 +2,6 @@
     <div class="comment-content">
         <h5 class="card-title mb-0">
             {{ comment.user.name }} {{ comment.user.surname }}
-            <a href="#" @click.prevent="showReplyBox(reply2Parent)" class="btn btn-secondary btn-sm">
-                <i class="fas fa-reply"></i>
-                Reply
-            </a>
-            <a href="#" v-if="comment.replies && comment.replies.length" @click.prevent="toggleReplies()" class="btn btn-secondary btn-sm">
-                {{ comment.replies.length }} replies
-            </a>
         </h5>
         <small class="text-muted">{{ comment.created_at }}</small>
         <p class="card-text">
@@ -17,6 +10,15 @@
                 Read more
             </a>
         </p>
+        <div class="comment-actions">
+            <a href="#" @click.prevent="showReplyBox(reply2Parent)" class="btn btn-secondary btn-sm">
+                <i class="fas fa-reply"></i>
+                Reply
+            </a>
+            <a href="#" v-if="comment.replies && comment.replies.length" @click.prevent="toggleReplies()" class="btn btn-secondary btn-sm">
+                {{ comment.replies.length }} replies
+            </a>
+        </div>
     </div>
 </template>
 <script>

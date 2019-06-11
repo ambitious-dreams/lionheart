@@ -26,10 +26,10 @@
                         </template>
                         <template v-else>
                             <div class="row">
-                                <div class="col-md-1">
-                                    <img :src="indexData.user.avatar_url" class="img-fluid rounded-circle"/>
+                                <div class="col-lg-1 col-md-2 col-3">
+                                    <img :src="indexData.user.avatar_url" class="img-fluid rounded-circle user-image"/>
                                 </div>
-                                <div class="col-md-11">
+                                <div class="col-lg-11 col-md-10 col-9">
                                     <h5 class="card-title mb-0">{{ indexData.user.name }} {{ indexData.user.surname }}</h5>
                                     <small class="d-block">Member since {{ indexData.user.created_at }}</small>
                                     <a href="#" @click.prevent="logout" class="d-inline-block">Logout</a>

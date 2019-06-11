@@ -15,7 +15,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-primary">Add Comment</button>
+                    <button class="btn btn-primary" :disabled="addCommentBtnDisabled">
+                        Add Comment
+                    </button>
                     <button class="btn btn-secondary" type="button" v-if="parentComment" @click="hideReplyBox">
                         Cancel
                     </button>
@@ -30,6 +32,7 @@ export default {
     data() {
         return {
             errors: [],
+            addCommentBtnDisabled: false,
         };
     },
     computed: {
@@ -53,6 +56,7 @@ export default {
     ],
     methods: {
         store() {
+            this.addCommentBtnDisabled = true;
             axios
                 .post(url('api/comments'), this.comment)
                 .then(response => {
@@ -64,6 +68,9 @@ export default {
                     if (error.response) {
                         this.errors = error.response.data.errors;
                     }
+                })
+                .finally(response => {
+                    this.addCommentBtnDisabled = false;
                 });
         },
         hideReplyBox() {

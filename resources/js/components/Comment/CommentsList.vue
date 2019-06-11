@@ -1,16 +1,21 @@
 <template>
     <div class="row">
         <div class="col-md-12">
-            <button type="button" class="btn btn-outline-secondary btn-block mb-2" @click="getMore" v-if="olderCommentsCount">
+            <button type="button" class="btn btn-outline-secondary btn-block mb-2" @click="getMore" v-if="olderCommentsCount" :disabled="getMoreBtnDisabled">
                 Older comments ({{ olderCommentsCount }})
             </button>
         </div>
-        <comment-item
-            v-for="comment in comments"
-            :comment="comment"
-            :key="comment.id"
-            :indexData="indexData"
-        ></comment-item>
+        <div class="col-md-12 text-center" v-if="!comments.length">
+            <img :src="loaderImage" alt="loading">
+        </div>
+        <template v-else>
+            <comment-item
+                v-for="comment in comments"
+                :comment="comment"
+                :key="comment.id"
+                :indexData="indexData"
+            ></comment-item>
+        </template>
     </div>
 </template>
 
@@ -21,13 +26,17 @@ export default {
     data() {
         return {
             comments: [],
-            totalCommentsCount: 0
+            totalCommentsCount: 0,
+            getMoreBtnDisabled: false,
         };
     },
     props: ['indexData'],
     computed: {
         olderCommentsCount: function () {
           return this.totalCommentsCount - this.comments.length;
+        },
+        loaderImage() {
+            return url('images/loader.gif');
         }
     },
     methods: {
@@ -39,10 +48,12 @@ export default {
             });
         },
         getMore() {
+            this.getMoreBtnDisabled = true;
             axios.get(url('api/get-more-comments'), {params: {skip: this.comments.length}}).then(response => {
                 let items = response.data;
                 items.reverse();
                 this.comments = items.concat(this.comments);
+                this.getMoreBtnDisabled = false;
             });
         },
     },

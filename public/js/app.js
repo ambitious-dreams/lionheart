@@ -2198,18 +2198,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       comments: [],
-      totalCommentsCount: 0
+      totalCommentsCount: 0,
+      getMoreBtnDisabled: false
     };
   },
   props: ['indexData'],
   computed: {
     olderCommentsCount: function olderCommentsCount() {
       return this.totalCommentsCount - this.comments.length;
+    },
+    loaderImage: function loaderImage() {
+      return url('images/loader.gif');
     }
   },
   methods: {
@@ -2227,6 +2236,7 @@ __webpack_require__.r(__webpack_exports__);
     getMore: function getMore() {
       var _this2 = this;
 
+      this.getMoreBtnDisabled = true;
       axios.get(url('api/get-more-comments'), {
         params: {
           skip: this.comments.length
@@ -2235,6 +2245,7 @@ __webpack_require__.r(__webpack_exports__);
         var items = response.data;
         items.reverse();
         _this2.comments = items.concat(_this2.comments);
+        _this2.getMoreBtnDisabled = false;
       });
     }
   },
@@ -2302,10 +2313,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      errors: []
+      errors: [],
+      addCommentBtnDisabled: false
     };
   },
   computed: {
@@ -2321,6 +2335,7 @@ __webpack_require__.r(__webpack_exports__);
     store: function store() {
       var _this = this;
 
+      this.addCommentBtnDisabled = true;
       axios.post(url('api/comments'), this.comment).then(function (response) {
         _this.comment.content = null;
         _this.errors = [];
@@ -2330,6 +2345,8 @@ __webpack_require__.r(__webpack_exports__);
         if (error.response) {
           _this.errors = error.response.data.errors;
         }
+      })["finally"](function (response) {
+        _this.addCommentBtnDisabled = false;
       });
     },
     hideReplyBox: function hideReplyBox() {
@@ -38069,7 +38086,7 @@ var render = function() {
               "button",
               {
                 staticClass: "btn btn-outline-secondary btn-block mb-2",
-                attrs: { type: "button" },
+                attrs: { type: "button", disabled: _vm.getMoreBtnDisabled },
                 on: { click: _vm.getMore }
               },
               [
@@ -38083,12 +38100,16 @@ var render = function() {
           : _vm._e()
       ]),
       _vm._v(" "),
-      _vm._l(_vm.comments, function(comment) {
-        return _c("comment-item", {
-          key: comment.id,
-          attrs: { comment: comment, indexData: _vm.indexData }
-        })
-      })
+      !_vm.comments.length
+        ? _c("div", { staticClass: "col-md-12 text-center" }, [
+            _c("img", { attrs: { src: _vm.loaderImage, alt: "loading" } })
+          ])
+        : _vm._l(_vm.comments, function(comment) {
+            return _c("comment-item", {
+              key: comment.id,
+              attrs: { comment: comment, indexData: _vm.indexData }
+            })
+          })
     ],
     2
   )
@@ -38204,9 +38225,14 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "form-group" }, [
-            _c("button", { staticClass: "btn btn-primary" }, [
-              _vm._v("Add Comment")
-            ]),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary",
+                attrs: { disabled: _vm.addCommentBtnDisabled }
+              },
+              [_vm._v("\n                    Add Comment\n                ")]
+            ),
             _vm._v(" "),
             _vm.parentComment
               ? _c(

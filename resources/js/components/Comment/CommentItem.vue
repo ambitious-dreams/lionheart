@@ -17,7 +17,7 @@
                         ></comment-item-content>
 
                         <div class="replies" v-if="comment.replies.length && showReplies">
-                            <div class="reply mb-3" v-for="reply in comment.replies">
+                            <div class="reply my-3" v-for="reply in comment.replies">
                                 <div class="row">
                                     <div class="col-md-1">
                                         <comment-item-user-image

@@ -37817,7 +37817,7 @@ var render = function() {
                     "div",
                     { staticClass: "replies" },
                     _vm._l(_vm.comment.replies, function(reply) {
-                      return _c("div", { staticClass: "reply mb-3" }, [
+                      return _c("div", { staticClass: "reply my-3" }, [
                         _c("div", { staticClass: "row" }, [
                           _c(
                             "div",

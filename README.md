@@ -1,7 +1,6 @@
 # Lionheart
 
-Comments app. Uses Laravel 5.8 + Vue 2.6  
-[Demo](https://thelionheart.000webhostapp.com/)
+Comments app. Uses Laravel 5.8 + Vue 2.6
 
 ## Installation
 
